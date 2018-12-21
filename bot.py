@@ -3,7 +3,7 @@ import requests
 import json
 
 token = os.getenv('TELE_TOKEN')
-method = 'getUpdates' 
+method = 'getUpdates'  # 어떤 사람이 나에게 메세지를 보냈는지 확인할 수 있는 메써드.
 
 # url = "https://api.telegram.org/bot{}/{}".format(token, method) # c9 환경에서는 사용 불가, local에서는 가능
 url = "https://api.hphk.io/telegram/bot{}/{}".format(token,method)
