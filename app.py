@@ -20,8 +20,6 @@ def telegram():
     #naver API 사용하기 위한 변수
     naver_client_id = os.getenv('NAVER_ID')
     naver_client_secret = os.getenv('NAVER_SECRET')
-    
-    
     tele_dict = request.get_json()
     # pp(request.get_json())
     # tele_dict = {'message': {'@service': 'naverservice.nmt.proxy',
@@ -30,7 +28,6 @@ def telegram():
     #              'result': {'srcLangType': 'ko',
     #                         'tarLangType': 'en',
     #                         'translatedText': 'Why'}}}
-    
     
     user_id = tele_dict['message']['from']['id'] # 유저 정보
     # text = tele_dict['message']['text'] # 유저 입력 데이터
@@ -42,7 +39,6 @@ def telegram():
     # image와 text 구분
     if tele_dict.get('message').get('photo') is not None: # 사진을 넣으면 사진이고, 그렇지 않으면 텍스트라고 인식.
         img = True
-    
     
     # 유저가 입력한 데이터 맨 앞 두 글자가 "번역"이어야 번역된 말이 나오도록
     else:
@@ -105,6 +101,18 @@ def telegram():
                 input = soup_death.select_one('#content > div.list_wrap > ul > li:nth-of-type({}) > div > div.subject > strong > a'.format(kinds))
                 list_disease.append(input.text)
             text = random.choice(list_disease)
+    elif text == "무신사 바지 추천":
+        list_pants = []
+        for page in list(range(1, 3)):
+            url_pants = 'https://store.musinsa.com/app/items/lists/003002/?category=&d_cat_cd=003002&u_cat_cd=&brand=modified%2Cplac%2Cnudiejeans&sort=pop&display_cnt=120&page=1page_kind=category&list_kind=small&free_dlv=&ex_soldout=&sale_goods=&exclusive_yn=&price=&color=&a_cat_cd=&sex=&size=&tag=&popup=&brand_favorite_yn=&goods_favorite_yn=&blf_yn=&price1=&price2='
+            res_pants = requests.get(url_pants).text
+            soup_pants = BeautifulSoup(res_pants, 'html.parser')
+            for kinds in list(range(1, 70)):
+                input = soup_pants.select_one('#searchList > li:nth-of-type({}) > div.li_inner > div.article_info > p.list_info > a'.format(kinds))
+                list_pants.append(input.text)
+            text = random.choice(list_pants)
+    #나중에는 사진까지 같이 나오도록 짜봐야지 :)        
+    
             
     requests.get(f'{api_url}/bot{token}/sendMessage?chat_id={user_id}&text={text}') # 메아리
     return ('', 200)
